@@ -31,7 +31,26 @@ static AVAILABLE_PRONOUNS: &[&str] = &[
 pub async fn put_settings(
   data: web::Data<AppState>,
   message: Json<Settings>,
+  req: actix_web::HttpRequest,
 ) -> anyhow::Result<impl Responder, SomeError> {
+  let authorization_token = req.headers().get("X-Authorization");
+  
+  if authorization_token.is_none() {
+    return Ok(HttpResponse::Unauthorized().json(json!({
+      "error": "Unauthorized",
+      "message": "You must be logged in to update your settings"
+    })));
+  }
+  
+  let authorization_token = authorization_token.unwrap().to_str().unwrap();
+  if authorization_token != data.config.app.platform_secret {
+    return Ok(HttpResponse::Unauthorized().json(json!({
+      "error": "Unauthorized",
+      "message": "Invalid token"
+    })));
+  }
+  
+
   let settings = message.into_inner();
 
   settings.insert().execute(&data.database).await?;
