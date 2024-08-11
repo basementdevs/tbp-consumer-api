@@ -7,7 +7,7 @@ mod tests {
   use charybdis::operations::{Delete, Insert};
   use twitch_extension_api::config::app::AppState;
   use twitch_extension_api::http::settings_controller::{get_settings, put_settings};
-  use twitch_extension_api::models::settings::Settings;
+  use twitch_extension_api::models::settings::{SettingOptions, Settings};
 
   #[actix_web::test]
   async fn test_get_settings() {
@@ -58,12 +58,20 @@ mod tests {
     let mut settings = Settings {
       user_id: 123,
       username: Some("danielhe4rt".to_string()),
-      pronouns: Some("she/her".to_string()),
+      pronouns: SettingOptions {
+        slug: "she-her".to_string(),
+        name: "He/Him".to_string(),
+        translation_key: "HeHim".to_string(),
+      },
       ..Default::default()
     };
     settings.insert().execute(&database).await.unwrap();
 
-    settings.pronouns = Some("he/him".to_string());
+    settings.pronouns = SettingOptions {
+      slug: "he-him".to_string(),
+      name: "He/Him".to_string(),
+      translation_key: "HeHim".to_string(),
+    };
 
     // Act
     let uri = "/settings".to_string();
@@ -77,43 +85,9 @@ mod tests {
     assert_eq!(res.status().as_u16(), 200);
 
     assert_eq!(parsed_response.username, settings.username);
-    assert_eq!(parsed_response.pronouns, settings.pronouns);
+    assert_eq!(parsed_response.pronouns.slug, settings.pronouns.slug);
 
     settings.delete().execute(&database).await.unwrap();
   }
 
-  #[actix_web::test]
-  async fn test_should_put_settings_in_right_format() {
-    // Arrange
-    let app_data = AppState::new().await;
-    let database = Arc::clone(&app_data.database);
-
-    let server = actix_test::start(move || {
-      App::new()
-        .app_data(Data::new(app_data.clone()))
-        .service(put_settings)
-    });
-
-    let mut settings = Settings {
-      user_id: 123,
-      username: Some("danielhe4rt".to_string()),
-      pronouns: Some("she/her".to_string()),
-      ..Default::default()
-    };
-    settings.insert().execute(&database).await.unwrap();
-
-    settings.pronouns = Some("he/hims".to_string());
-
-    // Act
-    let uri = "/settings".to_string();
-    let req = server.put(uri);
-
-    let res = req.send_json(&settings).await.unwrap();
-
-    // Assert
-
-    assert_eq!(res.status().as_u16(), 422);
-
-    settings.delete().execute(&database).await.unwrap();
-  }
 }

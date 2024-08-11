@@ -22,30 +22,36 @@ async fn main() -> std::io::Result<()> {
   let tls_enabled = app_data.config.tls.enabled;
   debug!("Web Server Online!");
 
-  // TLS setup.
-  rustls::crypto::aws_lc_rs::default_provider()
-    .install_default()
-    .unwrap();
+  let tls_config = if tls_enabled {
+    // TLS setup.
+    rustls::crypto::aws_lc_rs::default_provider()
+      .install_default()
+      .unwrap();
 
-  let mut certs_file = BufReader::new(File::open(app_data.config.tls.cert.clone()).unwrap());
-  let mut key_file = BufReader::new(File::open(app_data.config.tls.key.clone()).unwrap());
+    let mut certs_file = BufReader::new(File::open(app_data.config.tls.cert.clone()).unwrap());
+    let mut key_file = BufReader::new(File::open(app_data.config.tls.key.clone()).unwrap());
 
-  // load TLS certs and key
-  // to create a self-signed temporary cert for testing:
-  // `openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365 -subj '/CN=localhost'`
-  let tls_certs = rustls_pemfile::certs(&mut certs_file)
-    .collect::<Result<Vec<_>, _>>()
-    .unwrap();
-  let tls_key = rustls_pemfile::pkcs8_private_keys(&mut key_file)
-    .next()
-    .unwrap()
-    .unwrap();
+    // load TLS certs and key
+    // to create a self-signed temporary cert for testing:
+    // `openssl req -x509 -newkey rsa:4096 -nodes -keyout key.pem -out cert.pem -days 365 -subj '/CN=localhost'`
+    let tls_certs = rustls_pemfile::certs(&mut certs_file)
+      .collect::<Result<Vec<_>, _>>()
+      .unwrap();
+    let tls_key = rustls_pemfile::pkcs8_private_keys(&mut key_file)
+      .next()
+      .unwrap()
+      .unwrap();
 
-  // set up TLS config options
-  let tls_config = rustls::ServerConfig::builder()
-    .with_no_client_auth()
-    .with_single_cert(tls_certs, rustls::pki_types::PrivateKeyDer::Pkcs8(tls_key))
-    .unwrap();
+    // set up TLS config options
+    Some(
+      rustls::ServerConfig::builder()
+        .with_no_client_auth()
+        .with_single_cert(tls_certs, rustls::pki_types::PrivateKeyDer::Pkcs8(tls_key))
+        .unwrap(),
+    )
+  } else {
+    None
+  };
 
   let server = HttpServer::new(move || {
     let cors = Cors::default()
@@ -65,7 +71,12 @@ async fn main() -> std::io::Result<()> {
   });
 
   match tls_enabled {
-    true => server.bind_rustls_0_23(addr, tls_config)?.run().await,
+    true => {
+      server
+        .bind_rustls_0_23(addr, tls_config.unwrap())?
+        .run()
+        .await
+    }
     false => server.bind(addr)?.run().await,
   }
 }
