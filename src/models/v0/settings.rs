@@ -1,15 +1,7 @@
-use charybdis::macros::{charybdis_model, charybdis_udt_model};
-use charybdis::types::{Boolean, Frozen, Int, Text, Timestamp};
+use charybdis::macros::charybdis_model;
+use charybdis::types::{Int, Text, Timestamp};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-
-#[charybdis_udt_model(type_name = settingoptions)]
-#[derive(Debug, Default, Clone, Deserialize, Serialize)]
-pub struct SettingOptions {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
-}
 
 #[charybdis_model(
     table_name = settings,
@@ -28,9 +20,8 @@ pub struct Settings {
     pub username: Option<Text>,
     pub locale: Option<Text>,
     pub timezone: Option<Text>,
-    pub occupation: Frozen<SettingOptions>,
-    pub pronouns: Frozen<SettingOptions>,
-    pub is_developer: Option<Boolean>,
+    pub occupation: Option<Text>,
+    pub pronouns: Option<Text>,
     #[serde(default = "default_updated_at")]
     pub updated_at: Timestamp,
 }

@@ -7,6 +7,8 @@ use actix_web::{App, HttpServer};
 use log::debug;
 
 use crate::config::app::AppState;
+use crate::http::v0;
+use self::http::v1;
 
 mod config;
 mod http;
@@ -65,9 +67,10 @@ async fn main() -> std::io::Result<()> {
       .app_data(Data::new(app_data.clone()))
       .service(actix_files::Files::new("/static", "./static").use_last_modified(true))
       .service(http::welcome)
-      .service(http::messages_controller::post_submission)
-      .service(http::settings_controller::put_settings)
-      .service(http::settings_controller::get_settings)
+        .service(v0::settings_controller::put_settings)
+        .service(v0::settings_controller::get_settings)
+      .service(v1::settings_controller::put_settings)
+      .service(v1::settings_controller::get_settings)
   });
 
   match tls_enabled {

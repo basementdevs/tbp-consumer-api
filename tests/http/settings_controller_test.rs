@@ -5,9 +5,11 @@ mod tests {
   use actix_web::web::Data;
   use actix_web::App;
   use charybdis::operations::{Delete, Insert};
+  use log::debug;
   use twitch_extension_api::config::app::AppState;
-  use twitch_extension_api::http::settings_controller::{get_settings, put_settings};
-  use twitch_extension_api::models::settings::{SettingOptions, Settings};
+  use twitch_extension_api::http::v1::settings_controller::{get_settings, put_settings};
+  use twitch_extension_api::models::v1::settings::{SettingOptions, Settings};
+  use twitch_extension_api::models::v1::settings_by_username::SettingsByUsername;
 
   #[actix_web::test]
   async fn test_get_settings() {
@@ -23,14 +25,14 @@ mod tests {
 
     let settings = Settings {
       user_id: 123,
-      username: Some("danielhe4rt".to_string()),
+      username: "danielhe4rt".to_string(),
       ..Default::default()
     };
 
     settings.insert().execute(&database).await.unwrap();
 
     // Act
-    let uri = format!("/settings/{}", settings.username.clone().unwrap());
+    let uri = format!("/api/v1/settings/{}", settings.username.clone());
     let req = server.get(uri);
     let mut res = req.send().await.unwrap();
     let parsed_response: Settings = res.json().await.unwrap();
@@ -47,6 +49,7 @@ mod tests {
   async fn test_put_settings() {
     // Arrange
     let app_data = AppState::new().await;
+    let secret = app_data.config.app.platform_secret.clone();
     let database = Arc::clone(&app_data.database);
 
     let server = actix_test::start(move || {
@@ -57,7 +60,7 @@ mod tests {
 
     let mut settings = Settings {
       user_id: 123,
-      username: Some("danielhe4rt".to_string()),
+      username: "danielhe4rt".to_string(),
       pronouns: SettingOptions {
         slug: "she-her".to_string(),
         name: "He/Him".to_string(),
@@ -74,11 +77,12 @@ mod tests {
     };
 
     // Act
-    let uri = "/settings".to_string();
-    let req = server.put(uri);
+    let uri = "/api/v1/settings".to_string();
+    let req = server.put(uri)
+        .insert_header(("X-Authorization", secret));
 
     let mut res = req.send_json(&settings).await.unwrap();
-    let parsed_response: Settings = res.json().await.unwrap();
+    let parsed_response: SettingsByUsername = res.json().await.unwrap();
 
     // Assert
 
