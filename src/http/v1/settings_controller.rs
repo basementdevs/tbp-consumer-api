@@ -1,6 +1,5 @@
 use actix_web::{get, put, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
-use log::debug;
 use serde_json::json;
 use web::Json;
 

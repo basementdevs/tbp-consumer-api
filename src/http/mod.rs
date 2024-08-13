@@ -1,7 +1,6 @@
 pub mod v0;
 pub mod v1;
 
-use std::fmt::{Display, Formatter};
 use actix_web::{get, HttpResponse, ResponseError};
 use charybdis::errors::CharybdisError;
 use serde_json::json;

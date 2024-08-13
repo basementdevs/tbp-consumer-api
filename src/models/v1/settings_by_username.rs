@@ -8,9 +8,6 @@ use crate::models::v1::settings::SettingOptions;
     base_table = settings_v1,
     partition_keys = [username],
     clustering_keys = [user_id],
-    table_options = "
-     CLUSTERING ORDER BY (user_id DESC)
-    "
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct SettingsByUsername {

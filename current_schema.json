@@ -44,24 +44,24 @@
         ]
       ],
       "field_names": [
+        "username",
+        "timezone",
         "is_developer",
+        "pronouns",
         "locale",
         "occupation",
-        "timezone",
-        "user_id",
         "updated_at",
-        "username",
-        "pronouns"
+        "user_id"
       ],
       "types_by_name": {
         "timezone": "text",
-        "occupation": "frozen<settingoptions>",
-        "is_developer": "boolean",
-        "updated_at": "timestamp",
-        "locale": "text",
-        "user_id": "int",
         "username": "text",
-        "pronouns": "frozen<settingoptions>"
+        "is_developer": "boolean",
+        "pronouns": "frozen<settingoptions>",
+        "user_id": "int",
+        "locale": "text",
+        "occupation": "frozen<settingoptions>",
+        "updated_at": "timestamp"
       },
       "type_name": "",
       "table_name": "",
@@ -114,22 +114,22 @@
         ]
       ],
       "field_names": [
-        "pronouns",
-        "timezone",
-        "user_id",
+        "updated_at",
+        "occupation",
         "username",
         "locale",
-        "updated_at",
-        "occupation"
+        "timezone",
+        "pronouns",
+        "user_id"
       ],
       "types_by_name": {
-        "timezone": "text",
-        "occupation": "text",
-        "locale": "text",
-        "pronouns": "text",
-        "username": "text",
         "updated_at": "timestamp",
-        "user_id": "int"
+        "occupation": "text",
+        "username": "text",
+        "locale": "text",
+        "user_id": "int",
+        "pronouns": "text",
+        "timezone": "text"
       },
       "type_name": "",
       "table_name": "",
@@ -167,12 +167,12 @@
       ],
       "field_names": [
         "slug",
-        "translation_key",
-        "name"
+        "name",
+        "translation_key"
       ],
       "types_by_name": {
-        "slug": "text",
         "name": "text",
+        "slug": "text",
         "translation_key": "text"
       },
       "type_name": "",
@@ -187,77 +187,6 @@
     }
   },
   "materialized_views": {
-    "settings_by_username": {
-      "fields": [
-        [
-          "locale",
-          "text",
-          false
-        ],
-        [
-          "occupation",
-          "text",
-          false
-        ],
-        [
-          "pronouns",
-          "text",
-          false
-        ],
-        [
-          "timezone",
-          "text",
-          false
-        ],
-        [
-          "updated_at",
-          "timestamp",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ],
-        [
-          "username",
-          "text",
-          false
-        ]
-      ],
-      "field_names": [
-        "occupation",
-        "locale",
-        "timezone",
-        "username",
-        "pronouns",
-        "updated_at",
-        "user_id"
-      ],
-      "types_by_name": {
-        "timezone": "text",
-        "pronouns": "text",
-        "updated_at": "timestamp",
-        "user_id": "int",
-        "username": "text",
-        "occupation": "text",
-        "locale": "text"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "username"
-      ],
-      "clustering_keys": [
-        "updated_at",
-        "user_id"
-      ],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
     "settings_by_username_v1": {
       "fields": [
         [
@@ -297,21 +226,21 @@
         ]
       ],
       "field_names": [
-        "timezone",
         "updated_at",
-        "pronouns",
-        "user_id",
         "username",
+        "pronouns",
+        "occupation",
         "locale",
-        "occupation"
+        "timezone",
+        "user_id"
       ],
       "types_by_name": {
-        "user_id": "int",
-        "locale": "text",
-        "timezone": "text",
-        "username": "text",
-        "updated_at": "timestamp",
         "occupation": "frozen<settingoptions>",
+        "user_id": "int",
+        "timezone": "text",
+        "updated_at": "timestamp",
+        "username": "text",
+        "locale": "text",
         "pronouns": "frozen<settingoptions>"
       },
       "type_name": "",
@@ -321,6 +250,77 @@
         "username"
       ],
       "clustering_keys": [
+        "user_id"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "settings_by_username": {
+      "fields": [
+        [
+          "locale",
+          "text",
+          false
+        ],
+        [
+          "occupation",
+          "text",
+          false
+        ],
+        [
+          "pronouns",
+          "text",
+          false
+        ],
+        [
+          "timezone",
+          "text",
+          false
+        ],
+        [
+          "updated_at",
+          "timestamp",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ],
+        [
+          "username",
+          "text",
+          false
+        ]
+      ],
+      "field_names": [
+        "pronouns",
+        "updated_at",
+        "occupation",
+        "timezone",
+        "user_id",
+        "username",
+        "locale"
+      ],
+      "types_by_name": {
+        "updated_at": "timestamp",
+        "locale": "text",
+        "username": "text",
+        "pronouns": "text",
+        "user_id": "int",
+        "timezone": "text",
+        "occupation": "text"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "username"
+      ],
+      "clustering_keys": [
+        "updated_at",
         "user_id"
       ],
       "static_columns": [],
