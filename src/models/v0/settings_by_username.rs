@@ -3,10 +3,10 @@ use charybdis::types::{Int, Text, Timestamp};
 use serde::{Deserialize, Serialize};
 
 #[charybdis_view_model(
-    table_name=settings_by_username,
-    base_table=settings,
-    partition_keys=[username],
-    clustering_keys=[user_id, updated_at],
+    table_name = settings_by_username,
+    base_table = settings,
+    partition_keys = [username],
+    clustering_keys = [user_id, updated_at],
     table_options = "
      CLUSTERING ORDER BY (updated_at DESC, user_id DESC)
     "
