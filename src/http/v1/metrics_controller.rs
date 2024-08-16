@@ -8,7 +8,6 @@ use crate::models::v1::metrics::{
 };
 use actix_web::{get, post, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
-use charybdis::options::Consistency::One;
 use charybdis::types::Text;
 use scylla::statement::Consistency;
 use serde::{Deserialize, Serialize};
