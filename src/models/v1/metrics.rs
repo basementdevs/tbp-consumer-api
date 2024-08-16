@@ -12,9 +12,9 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMetrics {
-    pub user_id: Int,
-    pub watch_time_in_minutes: Option<Counter>,
-    pub messages_count: Option<Counter>
+  pub user_id: Int,
+  pub watch_time_in_minutes: Option<Counter>,
+  pub messages_count: Option<Counter>,
 }
 
 #[charybdis_model(
@@ -27,10 +27,10 @@ pub struct UserMetrics {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMetricsByStream {
-    pub user_id: Int,
-    pub channel_id: Text,
-    pub minutes_watched: Option<Counter>,
-    pub messages_count: Option<Counter>
+  pub user_id: Int,
+  pub channel_id: Text,
+  pub minutes_watched: Option<Counter>,
+  pub messages_count: Option<Counter>,
 }
 
 #[charybdis_model(
@@ -43,10 +43,10 @@ pub struct UserMetricsByStream {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMetricsByCategory {
-    pub user_id: Int,
-    pub category_id: Text,
-    pub minutes_watched: Option<Counter>,
-    pub messages_count: Option<Counter>
+  pub user_id: Int,
+  pub category_id: Text,
+  pub minutes_watched: Option<Counter>,
+  pub messages_count: Option<Counter>,
 }
 
 #[charybdis_model(
@@ -62,9 +62,9 @@ pub struct UserMetricsByCategory {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMostWatchedCategoryLeaderboard {
-    pub user_id: Int,
-    pub category_id: Text,
-    pub minutes_watched: Int
+  pub user_id: Int,
+  pub category_id: Text,
+  pub minutes_watched: Int,
 }
 
 #[charybdis_model(
@@ -80,7 +80,7 @@ pub struct UserMostWatchedCategoryLeaderboard {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMostWatchedChannelsLeaderboard {
-    pub user_id: Int,
-    pub channel_id: Text,
-    pub minutes_watched: Int
+  pub user_id: Int,
+  pub channel_id: Text,
+  pub minutes_watched: Int,
 }

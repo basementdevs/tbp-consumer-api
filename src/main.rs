@@ -72,6 +72,7 @@ async fn main() -> std::io::Result<()> {
       .service(v1::settings_controller::put_settings)
       .service(v1::settings_controller::get_settings)
       .service(v1::metrics_controller::post_heartbeat)
+      .service(v1::auth_controller::post_user_authentication)
   });
 
   match tls_enabled {
