@@ -78,8 +78,7 @@ mod tests {
 
     // Act
     let uri = "/api/v1/settings".to_string();
-    let req = server.put(uri)
-        .insert_header(("X-Authorization", secret));
+    let req = server.put(uri).insert_header(("X-Authorization", secret));
 
     let mut res = req.send_json(&settings).await.unwrap();
     let parsed_response: SettingsByUsername = res.json().await.unwrap();
@@ -93,5 +92,4 @@ mod tests {
 
     settings.delete().execute(&database).await.unwrap();
   }
-
 }

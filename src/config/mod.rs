@@ -41,7 +41,10 @@ impl Config {
         version: dotenvy::var("APP_VERSION").unwrap(),
         url: dotenvy::var("APP_URL").unwrap(),
         port: dotenvy::var("APP_PORT").unwrap().parse::<u16>().unwrap(),
-        platform_secret: dotenvy::var("APP_PLATFORM_SECRET").unwrap().parse::<String>().unwrap(),
+        platform_secret: dotenvy::var("APP_PLATFORM_SECRET")
+          .unwrap()
+          .parse::<String>()
+          .unwrap(),
       },
       tls: Tls {
         enabled: dotenvy::var("APP_TLS_ENABLED").unwrap() == "true",
