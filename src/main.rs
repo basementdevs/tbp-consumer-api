@@ -6,9 +6,9 @@ use actix_web::web::Data;
 use actix_web::{App, HttpServer};
 use log::debug;
 
+use self::http::v1;
 use crate::config::app::AppState;
 use crate::http::v0;
-use self::http::v1;
 
 mod config;
 mod http;
@@ -67,8 +67,8 @@ async fn main() -> std::io::Result<()> {
       .app_data(Data::new(app_data.clone()))
       .service(actix_files::Files::new("/static", "./static").use_last_modified(true))
       .service(http::welcome)
-        .service(v0::settings_controller::put_settings)
-        .service(v0::settings_controller::get_settings)
+      .service(v0::settings_controller::put_settings)
+      .service(v0::settings_controller::get_settings)
       .service(v1::settings_controller::put_settings)
       .service(v1::settings_controller::get_settings)
       .service(v1::metrics_controller::post_heartbeat)
