@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  setup:
+    name: Setup rust
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
+          components: clippy, rustfmt
+      - name: Build project
+        run: make build
+  lint:
+    name: Run lint and format
+    runs-on: ubuntu-24.04
+    env:
+      RUSTFLAGS: "-Dwarnings"
+    needs:
+      - setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run formatter
+        uses: actions-rust-lang/rustfmt@v1
+      - name: Run linter
+        uses: clechasseur/rs-clippy-check@v3
+        with:
+          args: --all-targets --all-features
