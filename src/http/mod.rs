@@ -17,7 +17,6 @@ pub enum SomeError {
   CharybdisError(#[from] CharybdisError),
 }
 
-
 impl ResponseError for SomeError {
   fn error_response(&self) -> HttpResponse {
     match self {
