@@ -5,7 +5,6 @@ mod tests {
   use actix_web::web::Data;
   use actix_web::App;
   use charybdis::operations::{Delete, Insert};
-  use log::debug;
   use twitch_extension_api::config::app::AppState;
   use twitch_extension_api::http::v1::settings_controller::{get_settings, put_settings};
   use twitch_extension_api::models::v1::settings::{SettingOptions, Settings};
