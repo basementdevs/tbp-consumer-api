@@ -1,17 +1,17 @@
-use actix_web::{post, web, HttpResponse, Responder};
-use charybdis::operations::{Find, Insert};
-use charybdis::options::Consistency::One;
-use charybdis::types::Text;
-use serde::{Deserialize, Serialize};
-
 use crate::config::app::AppState;
+use crate::http::v1::is_authenticated;
 use crate::http::SomeError;
 use crate::models::v1::metrics::{
   delete_user_most_watched_category_leaderboard, delete_user_most_watched_channels_leaderboard,
   UserMetrics, UserMetricsByCategory, UserMetricsByStream, UserMostWatchedCategoryLeaderboard,
   UserMostWatchedChannelsLeaderboard,
 };
-use crate::models::v1::users::UserToken;
+use actix_web::{get, post, web, HttpResponse, Responder};
+use charybdis::operations::{Find, Insert};
+use charybdis::options::Consistency::One;
+use charybdis::types::Text;
+use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct UserMetricsDTO {
@@ -20,34 +20,75 @@ struct UserMetricsDTO {
   pub category_id: Text,
 }
 
-#[post("/api/v1/heartbeat")]
-pub async fn post_heartbeat(
+#[get("/api/v1/metrics/by-user")]
+pub async fn get_user_metrics(
   data: web::Data<AppState>,
-  payload: web::Json<UserMetricsDTO>,
   req: actix_web::HttpRequest,
 ) -> Result<impl Responder, SomeError> {
-  let header = req.headers().get("Authorization");
+  let authenticated_user = is_authenticated(&data.database, req).await;
 
-  if header.is_none() {
+  if authenticated_user.is_none() {
     return Ok(HttpResponse::Unauthorized().finish());
   }
 
-  let header = header.unwrap().to_str();
-
-  if header.is_err() {
-    return Ok(HttpResponse::Unauthorized().finish());
-  }
-  let payload = payload.into_inner();
-
-  let response = UserToken {
-    user_id: payload.user_id,
-    access_token: header.unwrap().to_string(),
+  let user_id = authenticated_user.unwrap().user_id.unwrap();
+  let main_metrics = UserMetrics {
+    user_id,
+    ..Default::default()
   }
   .maybe_find_by_primary_key()
   .execute(&data.database)
   .await?;
 
-  if response.is_none() {
+  if main_metrics.is_none() {
+    return Ok(HttpResponse::NotFound().json(json!({
+        "error": "Not Found",
+        "message": "User metrics not found"
+    })));
+  }
+
+  let user_metrics_by_channel = UserMostWatchedCategoryLeaderboard {
+    user_id,
+    ..Default::default()
+  };
+  let user_metrics_by_category = UserMostWatchedChannelsLeaderboard {
+    user_id,
+    ..Default::default()
+  };
+
+  let user_metrics_by_channel = user_metrics_by_channel
+    .find_by_partition_key()
+    .execute(&data.database)
+    .await?
+    .try_collect()
+    .await
+    .unwrap();
+
+  let user_metrics_by_category = user_metrics_by_category
+    .find_by_partition_key()
+    .execute(&data.database)
+    .await?
+    .try_collect()
+    .await
+    .unwrap();
+
+  Ok(HttpResponse::Ok().json(json!({
+      "main_metrics": main_metrics,
+      "user_metrics_by_channel": user_metrics_by_channel,
+      "user_metrics_by_category": user_metrics_by_category,
+  })))
+}
+
+#[post("/api/v1/metrics/heartbeat")]
+pub async fn post_heartbeat(
+  data: web::Data<AppState>,
+  payload: web::Json<UserMetricsDTO>,
+  req: actix_web::HttpRequest,
+) -> Result<impl Responder, SomeError> {
+  let payload = payload.into_inner();
+  let is_authenticated = is_authenticated(&data.database, req).await;
+
+  if is_authenticated.is_none() {
     return Ok(HttpResponse::Unauthorized().finish());
   }
 
