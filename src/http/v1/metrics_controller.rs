@@ -15,7 +15,6 @@ use serde_json::json;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct UserMetricsDTO {
-  pub user_id: i32,
   pub channel_id: Text,
   pub category_id: Text,
 }
@@ -94,18 +93,19 @@ pub async fn post_heartbeat(
   if is_authenticated.is_none() {
     return Ok(HttpResponse::Unauthorized().finish());
   }
+  let user_id = is_authenticated.unwrap().user_id.unwrap();
 
   let main_metrics = UserMetrics {
-    user_id: payload.user_id,
+    user_id,
     ..Default::default()
   };
   let user_metrics_by_channel = UserMetricsByStream {
-    user_id: payload.user_id,
+    user_id,
     channel_id: payload.channel_id.clone(),
     ..Default::default()
   };
   let user_metrics_by_category = UserMetricsByCategory {
-    user_id: payload.user_id,
+    user_id,
     category_id: payload.category_id.clone(),
     ..Default::default()
   };
@@ -141,13 +141,13 @@ pub async fn post_heartbeat(
   let current_minutes_by_channel = user_metrics_by_channel.minutes_watched.unwrap().0 as i32;
 
   let user_category_leaderboard = UserMostWatchedCategoryLeaderboard {
-    user_id: payload.user_id,
+    user_id,
     minutes_watched: current_minutes_by_category,
     category_id: payload.category_id.clone(),
   };
 
   let user_channels_leaderboard = UserMostWatchedChannelsLeaderboard {
-    user_id: payload.user_id,
+    user_id,
     minutes_watched: current_minutes_by_channel,
     channel_id: payload.channel_id.clone(),
   };
@@ -155,7 +155,7 @@ pub async fn post_heartbeat(
   delete_user_most_watched_category_leaderboard!(
     "user_id = ? AND category_id = ? AND minutes_watched = ?",
     (
-      payload.user_id,
+      user_id,
       payload.category_id.clone(),
       current_minutes_by_category - 1
     )
@@ -166,7 +166,7 @@ pub async fn post_heartbeat(
   delete_user_most_watched_channels_leaderboard!(
     "user_id = ? AND channel_id = ? AND minutes_watched = ?",
     (
-      payload.user_id,
+      user_id,
       payload.channel_id,
       current_minutes_by_channel - 1
     )
