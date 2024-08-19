@@ -1,5 +1,6 @@
 use actix_web::{get, put, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
+use charybdis::options::Consistency;
 use serde_json::json;
 use web::Json;
 
@@ -52,6 +53,7 @@ pub async fn get_settings(
 
   let settings = settings
     .find_by_partition_key()
+    .consistency(Consistency::LocalOne)
     .execute(&data.database)
     .await?;
 
