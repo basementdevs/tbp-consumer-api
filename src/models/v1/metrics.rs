@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserMetrics {
   pub user_id: Int,
-  pub watch_time_in_minutes: Option<Counter>,
+  pub minutes_watched: Option<Counter>,
   pub messages_count: Option<Counter>,
 }
 

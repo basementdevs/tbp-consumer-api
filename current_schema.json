@@ -1,282 +1,5 @@
 {
   "tables": {
-    "user_metrics_by_channel_v1": {
-      "fields": [
-        [
-          "channel_id",
-          "text",
-          false
-        ],
-        [
-          "messages_count",
-          "counter",
-          false
-        ],
-        [
-          "minutes_watched",
-          "counter",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ]
-      ],
-      "field_names": [
-        "messages_count",
-        "minutes_watched",
-        "channel_id",
-        "user_id"
-      ],
-      "types_by_name": {
-        "messages_count": "counter",
-        "channel_id": "text",
-        "user_id": "int",
-        "minutes_watched": "counter"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "channel_id",
-        "user_id"
-      ],
-      "clustering_keys": [],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
-    "user_most_watched_category_leaderboard_v1": {
-      "fields": [
-        [
-          "category_id",
-          "text",
-          false
-        ],
-        [
-          "minutes_watched",
-          "int",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ]
-      ],
-      "field_names": [
-        "minutes_watched",
-        "user_id",
-        "category_id"
-      ],
-      "types_by_name": {
-        "user_id": "int",
-        "minutes_watched": "int",
-        "category_id": "text"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "user_id"
-      ],
-      "clustering_keys": [
-        "category_id",
-        "minutes_watched"
-      ],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
-    "settings": {
-      "fields": [
-        [
-          "locale",
-          "text",
-          false
-        ],
-        [
-          "occupation",
-          "text",
-          false
-        ],
-        [
-          "pronouns",
-          "text",
-          false
-        ],
-        [
-          "timezone",
-          "text",
-          false
-        ],
-        [
-          "updated_at",
-          "timestamp",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ],
-        [
-          "username",
-          "text",
-          false
-        ]
-      ],
-      "field_names": [
-        "locale",
-        "timezone",
-        "updated_at",
-        "pronouns",
-        "user_id",
-        "username",
-        "occupation"
-      ],
-      "types_by_name": {
-        "timezone": "text",
-        "occupation": "text",
-        "locale": "text",
-        "updated_at": "timestamp",
-        "username": "text",
-        "pronouns": "text",
-        "user_id": "int"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "user_id"
-      ],
-      "clustering_keys": [
-        "updated_at"
-      ],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
-    "user_most_watched_channels_leaderboard_v1": {
-      "fields": [
-        [
-          "channel_id",
-          "text",
-          false
-        ],
-        [
-          "minutes_watched",
-          "int",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ]
-      ],
-      "field_names": [
-        "minutes_watched",
-        "channel_id",
-        "user_id"
-      ],
-      "types_by_name": {
-        "minutes_watched": "int",
-        "user_id": "int",
-        "channel_id": "text"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "user_id"
-      ],
-      "clustering_keys": [
-        "channel_id",
-        "minutes_watched"
-      ],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
-    "user_metrics_v1": {
-      "fields": [
-        [
-          "messages_count",
-          "counter",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ],
-        [
-          "watch_time_in_minutes",
-          "counter",
-          false
-        ]
-      ],
-      "field_names": [
-        "user_id",
-        "watch_time_in_minutes",
-        "messages_count"
-      ],
-      "types_by_name": {
-        "messages_count": "counter",
-        "watch_time_in_minutes": "counter",
-        "user_id": "int"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "user_id"
-      ],
-      "clustering_keys": [],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
-    "user_tokens_v1": {
-      "fields": [
-        [
-          "access_token",
-          "text",
-          false
-        ],
-        [
-          "user_id",
-          "int",
-          false
-        ]
-      ],
-      "field_names": [
-        "access_token",
-        "user_id"
-      ],
-      "types_by_name": {
-        "access_token": "text",
-        "user_id": "int"
-      },
-      "type_name": "",
-      "table_name": "",
-      "base_table": "",
-      "partition_keys": [
-        "access_token"
-      ],
-      "clustering_keys": [],
-      "static_columns": [],
-      "global_secondary_indexes": [],
-      "local_secondary_indexes": [],
-      "table_options": null
-    },
     "user_metrics_by_category_v1": {
       "fields": [
         [
@@ -301,16 +24,16 @@
         ]
       ],
       "field_names": [
+        "user_id",
         "category_id",
-        "messages_count",
         "minutes_watched",
-        "user_id"
+        "messages_count"
       ],
       "types_by_name": {
-        "user_id": "int",
         "messages_count": "counter",
         "category_id": "text",
-        "minutes_watched": "counter"
+        "minutes_watched": "counter",
+        "user_id": "int"
       },
       "type_name": "",
       "table_name": "",
@@ -369,24 +92,24 @@
         ]
       ],
       "field_names": [
-        "locale",
-        "user_id",
-        "updated_at",
-        "pronouns",
         "occupation",
+        "user_id",
         "is_developer",
+        "timezone",
+        "pronouns",
         "username",
-        "timezone"
+        "updated_at",
+        "locale"
       ],
       "types_by_name": {
-        "username": "text",
+        "locale": "text",
         "user_id": "int",
+        "is_developer": "boolean",
         "pronouns": "frozen<settingoptions>",
+        "occupation": "frozen<settingoptions>",
         "timezone": "text",
         "updated_at": "timestamp",
-        "locale": "text",
-        "is_developer": "boolean",
-        "occupation": "frozen<settingoptions>"
+        "username": "text"
       },
       "type_name": "",
       "table_name": "",
@@ -395,6 +118,506 @@
         "user_id"
       ],
       "clustering_keys": [],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "user_metrics_by_channel_v1": {
+      "fields": [
+        [
+          "channel_id",
+          "text",
+          false
+        ],
+        [
+          "messages_count",
+          "counter",
+          false
+        ],
+        [
+          "minutes_watched",
+          "counter",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ]
+      ],
+      "field_names": [
+        "user_id",
+        "channel_id",
+        "messages_count",
+        "minutes_watched"
+      ],
+      "types_by_name": {
+        "minutes_watched": "counter",
+        "channel_id": "text",
+        "messages_count": "counter",
+        "user_id": "int"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "channel_id",
+        "user_id"
+      ],
+      "clustering_keys": [],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "user_most_watched_category_leaderboard_v1": {
+      "fields": [
+        [
+          "category_id",
+          "text",
+          false
+        ],
+        [
+          "minutes_watched",
+          "int",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ]
+      ],
+      "field_names": [
+        "user_id",
+        "category_id",
+        "minutes_watched"
+      ],
+      "types_by_name": {
+        "category_id": "text",
+        "minutes_watched": "int",
+        "user_id": "int"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "user_id"
+      ],
+      "clustering_keys": [
+        "category_id",
+        "minutes_watched"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "messages": {
+      "fields": [
+        [
+          "channel_id",
+          "int",
+          false
+        ],
+        [
+          "color",
+          "text",
+          false
+        ],
+        [
+          "content",
+          "text",
+          false
+        ],
+        [
+          "message_id",
+          "uuid",
+          false
+        ],
+        [
+          "sent_at",
+          "timestamp",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ],
+        [
+          "username",
+          "text",
+          false
+        ]
+      ],
+      "field_names": [
+        "color",
+        "message_id",
+        "username",
+        "channel_id",
+        "sent_at",
+        "content",
+        "user_id"
+      ],
+      "types_by_name": {
+        "channel_id": "int",
+        "color": "text",
+        "sent_at": "timestamp",
+        "user_id": "int",
+        "message_id": "uuid",
+        "username": "text",
+        "content": "text"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "channel_id"
+      ],
+      "clustering_keys": [
+        "sent_at"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [
+        [
+          "messages_username_idx",
+          "username"
+        ]
+      ],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "user_most_watched_channels_leaderboard_v1": {
+      "fields": [
+        [
+          "channel_id",
+          "text",
+          false
+        ],
+        [
+          "minutes_watched",
+          "int",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ]
+      ],
+      "field_names": [
+        "user_id",
+        "minutes_watched",
+        "channel_id"
+      ],
+      "types_by_name": {
+        "user_id": "int",
+        "minutes_watched": "int",
+        "channel_id": "text"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "user_id"
+      ],
+      "clustering_keys": [
+        "channel_id",
+        "minutes_watched"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "settings": {
+      "fields": [
+        [
+          "locale",
+          "text",
+          false
+        ],
+        [
+          "occupation",
+          "text",
+          false
+        ],
+        [
+          "pronouns",
+          "text",
+          false
+        ],
+        [
+          "timezone",
+          "text",
+          false
+        ],
+        [
+          "updated_at",
+          "timestamp",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ],
+        [
+          "username",
+          "text",
+          false
+        ]
+      ],
+      "field_names": [
+        "updated_at",
+        "user_id",
+        "locale",
+        "pronouns",
+        "username",
+        "occupation",
+        "timezone"
+      ],
+      "types_by_name": {
+        "pronouns": "text",
+        "locale": "text",
+        "timezone": "text",
+        "updated_at": "timestamp",
+        "user_id": "int",
+        "username": "text",
+        "occupation": "text"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "user_id"
+      ],
+      "clustering_keys": [
+        "updated_at"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "user_metrics_v1": {
+      "fields": [
+        [
+          "messages_count",
+          "counter",
+          false
+        ],
+        [
+          "minutes_watched",
+          "counter",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ]
+      ],
+      "field_names": [
+        "messages_count",
+        "minutes_watched",
+        "user_id"
+      ],
+      "types_by_name": {
+        "messages_count": "counter",
+        "user_id": "int",
+        "minutes_watched": "counter"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "user_id"
+      ],
+      "clustering_keys": [],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "user_tokens_v1": {
+      "fields": [
+        [
+          "access_token",
+          "text",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ]
+      ],
+      "field_names": [
+        "user_id",
+        "access_token"
+      ],
+      "types_by_name": {
+        "access_token": "text",
+        "user_id": "int"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "access_token"
+      ],
+      "clustering_keys": [],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "settings_scylla_cdc_log": {
+      "fields": [
+        [
+          "cdc$batch_seq_no",
+          "int",
+          false
+        ],
+        [
+          "cdc$deleted_locale",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$deleted_occupation",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$deleted_pronouns",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$deleted_timezone",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$deleted_username",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$end_of_batch",
+          "boolean",
+          false
+        ],
+        [
+          "cdc$operation",
+          "tinyint",
+          false
+        ],
+        [
+          "cdc$stream_id",
+          "blob",
+          false
+        ],
+        [
+          "cdc$time",
+          "timeuuid",
+          false
+        ],
+        [
+          "cdc$ttl",
+          "bigint",
+          false
+        ],
+        [
+          "locale",
+          "text",
+          false
+        ],
+        [
+          "occupation",
+          "text",
+          false
+        ],
+        [
+          "pronouns",
+          "text",
+          false
+        ],
+        [
+          "timezone",
+          "text",
+          false
+        ],
+        [
+          "updated_at",
+          "timestamp",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ],
+        [
+          "username",
+          "text",
+          false
+        ]
+      ],
+      "field_names": [
+        "cdc$end_of_batch",
+        "cdc$deleted_occupation",
+        "cdc$deleted_username",
+        "cdc$time",
+        "locale",
+        "cdc$stream_id",
+        "cdc$deleted_locale",
+        "cdc$batch_seq_no",
+        "cdc$deleted_timezone",
+        "cdc$ttl",
+        "pronouns",
+        "cdc$operation",
+        "updated_at",
+        "occupation",
+        "cdc$deleted_pronouns",
+        "timezone",
+        "user_id",
+        "username"
+      ],
+      "types_by_name": {
+        "cdc$stream_id": "blob",
+        "cdc$operation": "tinyint",
+        "timezone": "text",
+        "cdc$deleted_timezone": "boolean",
+        "cdc$end_of_batch": "boolean",
+        "user_id": "int",
+        "pronouns": "text",
+        "cdc$batch_seq_no": "int",
+        "cdc$ttl": "bigint",
+        "cdc$deleted_locale": "boolean",
+        "cdc$deleted_pronouns": "boolean",
+        "locale": "text",
+        "occupation": "text",
+        "cdc$time": "timeuuid",
+        "username": "text",
+        "updated_at": "timestamp",
+        "cdc$deleted_occupation": "boolean",
+        "cdc$deleted_username": "boolean"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "cdc$stream_id"
+      ],
+      "clustering_keys": [
+        "cdc$batch_seq_no",
+        "cdc$time"
+      ],
       "static_columns": [],
       "global_secondary_indexes": [],
       "local_secondary_indexes": [],
@@ -421,9 +644,9 @@
         ]
       ],
       "field_names": [
-        "translation_key",
         "slug",
-        "name"
+        "name",
+        "translation_key"
       ],
       "types_by_name": {
         "translation_key": "text",
@@ -439,39 +662,55 @@
       "global_secondary_indexes": [],
       "local_secondary_indexes": [],
       "table_options": null
+    },
+    "ut": {
+      "fields": [
+        [
+          "int_val",
+          "int",
+          false
+        ],
+        [
+          "bool_val",
+          "boolean",
+          false
+        ]
+      ],
+      "field_names": [
+        "int_val",
+        "bool_val"
+      ],
+      "types_by_name": {
+        "int_val": "int",
+        "bool_val": "boolean"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [],
+      "clustering_keys": [],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
     }
   },
   "materialized_views": {
-    "settings_by_username_v1": {
+    "messages_username_idx_index": {
       "fields": [
         [
-          "locale",
-          "text",
-          false
-        ],
-        [
-          "occupation",
-          "frozen<settingoptions>",
-          false
-        ],
-        [
-          "pronouns",
-          "frozen<settingoptions>",
-          false
-        ],
-        [
-          "timezone",
-          "text",
-          false
-        ],
-        [
-          "updated_at",
-          "timestamp",
-          false
-        ],
-        [
-          "user_id",
+          "channel_id",
           "int",
+          false
+        ],
+        [
+          "idx_token",
+          "bigint",
+          false
+        ],
+        [
+          "sent_at",
+          "timestamp",
           false
         ],
         [
@@ -481,22 +720,16 @@
         ]
       ],
       "field_names": [
-        "timezone",
-        "updated_at",
+        "idx_token",
         "username",
-        "user_id",
-        "locale",
-        "occupation",
-        "pronouns"
+        "sent_at",
+        "channel_id"
       ],
       "types_by_name": {
-        "occupation": "frozen<settingoptions>",
-        "updated_at": "timestamp",
-        "locale": "text",
-        "user_id": "int",
-        "pronouns": "frozen<settingoptions>",
-        "timezone": "text",
-        "username": "text"
+        "idx_token": "bigint",
+        "sent_at": "timestamp",
+        "username": "text",
+        "channel_id": "int"
       },
       "type_name": "",
       "table_name": "",
@@ -505,7 +738,9 @@
         "username"
       ],
       "clustering_keys": [
-        "user_id"
+        "channel_id",
+        "idx_token",
+        "sent_at"
       ],
       "static_columns": [],
       "global_secondary_indexes": [],
@@ -551,22 +786,22 @@
         ]
       ],
       "field_names": [
-        "timezone",
+        "occupation",
+        "updated_at",
         "locale",
         "pronouns",
-        "updated_at",
+        "timezone",
         "user_id",
-        "username",
-        "occupation"
+        "username"
       ],
       "types_by_name": {
+        "updated_at": "timestamp",
         "occupation": "text",
-        "user_id": "int",
-        "pronouns": "text",
         "username": "text",
         "locale": "text",
         "timezone": "text",
-        "updated_at": "timestamp"
+        "pronouns": "text",
+        "user_id": "int"
       },
       "type_name": "",
       "table_name": "",
@@ -576,6 +811,76 @@
       ],
       "clustering_keys": [
         "updated_at",
+        "user_id"
+      ],
+      "static_columns": [],
+      "global_secondary_indexes": [],
+      "local_secondary_indexes": [],
+      "table_options": null
+    },
+    "settings_by_username_v1": {
+      "fields": [
+        [
+          "locale",
+          "text",
+          false
+        ],
+        [
+          "occupation",
+          "frozen<settingoptions>",
+          false
+        ],
+        [
+          "pronouns",
+          "frozen<settingoptions>",
+          false
+        ],
+        [
+          "timezone",
+          "text",
+          false
+        ],
+        [
+          "updated_at",
+          "timestamp",
+          false
+        ],
+        [
+          "user_id",
+          "int",
+          false
+        ],
+        [
+          "username",
+          "text",
+          false
+        ]
+      ],
+      "field_names": [
+        "timezone",
+        "occupation",
+        "pronouns",
+        "updated_at",
+        "username",
+        "user_id",
+        "locale"
+      ],
+      "types_by_name": {
+        "pronouns": "frozen<settingoptions>",
+        "user_id": "int",
+        "occupation": "frozen<settingoptions>",
+        "timezone": "text",
+        "username": "text",
+        "locale": "text",
+        "updated_at": "timestamp"
+      },
+      "type_name": "",
+      "table_name": "",
+      "base_table": "",
+      "partition_keys": [
+        "username"
+      ],
+      "clustering_keys": [
         "user_id"
       ],
       "static_columns": [],

@@ -111,7 +111,7 @@ pub async fn post_heartbeat(
   };
 
   main_metrics
-    .increment_watch_time_in_minutes(1)
+    .increment_minutes_watched(1)
     .consistency(Consistency::LocalOne)
     .execute(&data.database)
     .await?;

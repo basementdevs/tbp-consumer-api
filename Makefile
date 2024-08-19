@@ -44,9 +44,9 @@ ifneq (,$(wildcard .env))
 endif
 
 .PHONY: migrate
-migrate: keyspace
+migrate:
 	@migrate --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
 
 .PHONY: keyspace
 keyspace:
-	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),) -d
+	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
