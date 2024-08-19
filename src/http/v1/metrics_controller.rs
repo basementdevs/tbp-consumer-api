@@ -165,11 +165,7 @@ pub async fn post_heartbeat(
 
   delete_user_most_watched_channels_leaderboard!(
     "user_id = ? AND channel_id = ? AND minutes_watched = ?",
-    (
-      user_id,
-      payload.channel_id,
-      current_minutes_by_channel - 1
-    )
+    (user_id, payload.channel_id, current_minutes_by_channel - 1)
   )
   .consistency(Consistency::LocalOne)
   .execute(&data.database)
