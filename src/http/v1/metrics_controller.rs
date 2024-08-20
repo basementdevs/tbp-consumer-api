@@ -49,11 +49,11 @@ pub async fn get_user_metrics(
     })));
   }
 
-  let user_metrics_by_channel = UserMostWatchedCategoryLeaderboard {
+  let user_metrics_by_channel = UserMostWatchedChannelsLeaderboard {
     user_id,
     ..Default::default()
   };
-  let user_metrics_by_category = UserMostWatchedChannelsLeaderboard {
+  let user_metrics_by_category = UserMostWatchedCategoryLeaderboard {
     user_id,
     ..Default::default()
   };
