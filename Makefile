@@ -50,3 +50,7 @@ migrate:
 .PHONY: keyspace
 keyspace:
 	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
+
+.PHONY: watch
+watch:
+	@$(CARGO) watch -w src -x run
