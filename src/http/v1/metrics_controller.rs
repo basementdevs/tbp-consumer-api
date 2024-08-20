@@ -43,9 +43,10 @@ pub async fn get_user_metrics(
   .await?;
 
   if main_metrics.is_none() {
-    return Ok(HttpResponse::NotFound().json(json!({
-        "error": "Not Found",
-        "message": "User metrics not found"
+    return Ok(HttpResponse::Ok().json(json!({
+        "main_metrics": [],
+        "user_metrics_by_channel": [],
+        "user_metrics_by_category": [],
     })));
   }
 
@@ -114,11 +115,9 @@ pub async fn post_heartbeat(
     .await?;
 
   if !throttle_verification.is_empty() {
-    info!("Throttling request: {:?}", throttle);
     return Ok(HttpResponse::TooManyRequests().finish());
   }
 
-  info!("Throttle verification: {:?}", throttle_verification);
   throttle.insert_throttle(&data.database, 5).await.unwrap();
 
   let main_metrics = UserMetrics {

@@ -26,6 +26,7 @@ pub struct Throttle {
 impl Throttle {
   pub async fn insert_throttle(&self, connection: &CachingSession, ttl: i32) -> anyhow::Result<()> {
     let query = Query::new(INSERT_THROTTLE_WITH_TTL);
+    connection.add_prepared_statement(&query).await?;
 
     connection
       .execute(
