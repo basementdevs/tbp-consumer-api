@@ -11,6 +11,25 @@ pub struct SettingOptions {
   pub translation_key: Text,
 }
 
+#[charybdis_udt_model(type_name = coloroption)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct ColorOption {
+    pub name: Text,
+    pub slug: Text,
+    pub translation_key: Text,
+    pub hex: Option<Text>,
+}
+
+#[charybdis_udt_model(type_name = effectoption)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct EffectOption {
+    pub name: Text,
+    pub slug: Text,
+    pub translation_key: Text,
+    pub class_name: Text,
+    pub hex: Option<Text>,
+}
+
 #[charybdis_model(
     table_name = settings_v1,
     partition_keys = [user_id],
@@ -27,6 +46,8 @@ pub struct Settings {
   pub timezone: Option<Text>,
   pub occupation: Frozen<SettingOptions>,
   pub pronouns: Frozen<SettingOptions>,
+  pub color: Frozen<ColorOption>,
+  pub effect: Frozen<EffectOption>,
   pub is_developer: Option<Boolean>,
   #[serde(default = "default_updated_at")]
   pub updated_at: Timestamp,
