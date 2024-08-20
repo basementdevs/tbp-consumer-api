@@ -117,7 +117,7 @@ pub async fn post_heartbeat(
     return Ok(HttpResponse::TooManyRequests().finish());
   }
 
-  throttle.insert_throttle(&data.database, 5).await.unwrap();
+  throttle.insert_throttle(&data.database, 60).await.unwrap();
 
   let main_metrics = UserMetrics {
     user_id,
