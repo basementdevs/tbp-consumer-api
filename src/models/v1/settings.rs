@@ -14,20 +14,20 @@ pub struct SettingOptions {
 #[charybdis_udt_model(type_name = coloroption)]
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ColorOption {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
-    pub hex: Option<Text>,
+  pub name: Text,
+  pub slug: Text,
+  pub translation_key: Text,
+  pub hex: Option<Text>,
 }
 
 #[charybdis_udt_model(type_name = effectoption)]
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct EffectOption {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
-    pub class_name: Text,
-    pub hex: Option<Text>,
+  pub name: Text,
+  pub slug: Text,
+  pub translation_key: Text,
+  pub class_name: Text,
+  pub hex: Option<Text>,
 }
 
 #[charybdis_model(

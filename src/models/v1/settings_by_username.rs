@@ -17,7 +17,7 @@ pub struct SettingsByUsername {
   pub timezone: Option<Text>,
   pub occupation: Frozen<SettingOptions>,
   pub pronouns: Frozen<SettingOptions>,
-    pub color: Frozen<ColorOption>,
-    pub effect: Frozen<EffectOption>,
+  pub color: Frozen<ColorOption>,
+  pub effect: Frozen<EffectOption>,
   pub updated_at: Timestamp,
 }
