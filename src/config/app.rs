@@ -1,16 +1,13 @@
 use crate::config::Config;
 use dotenvy::dotenv;
 use scylla::{CachingSession, Session, SessionBuilder};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::time::Duration;
-
-use super::throttle::ThrottleState;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
   pub config: Config,
   pub database: Arc<CachingSession>,
-  pub throttle_state: Arc<Mutex<ThrottleState>>,
 }
 
 impl AppState {
@@ -39,7 +36,6 @@ impl AppState {
         session,
         config.database.cached_queries,
       )),
-      throttle_state: Default::default(),
     }
   }
 }

@@ -1,5 +1,3 @@
-use std::time::{Duration, Instant};
-
 use crate::config::app::AppState;
 use crate::http::v1::is_authenticated;
 use crate::http::SomeError;
@@ -8,9 +6,12 @@ use crate::models::v1::metrics::{
   UserMetrics, UserMetricsByCategory, UserMetricsByStream, UserMostWatchedCategoryLeaderboard,
   UserMostWatchedChannelsLeaderboard,
 };
+use crate::models::v1::throttle::Throttle;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::types::Text;
+use chrono::Utc;
+use log::info;
 use scylla::statement::Consistency;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -97,20 +98,28 @@ pub async fn post_heartbeat(
   }
   let user_id = is_authenticated.unwrap().user_id.unwrap();
 
-  {
-    // NOTE: Scoped here so we don't have to hold the lock for the entire function nor drop it manually
-    let now = Instant::now();
-    let mut throttle_state = data.throttle_state.lock().unwrap();
-    let key = (user_id.to_string(), payload.channel_id.clone());
-    if let Some(last_request) = throttle_state.last_request.get(&key) {
-      // TODO: the time probably should be configurable in the state
-      if now.duration_since(*last_request) < Duration::from_secs(60) {
-        // Only update the last_rqeuest when we manage to fall under a minute, otherwise it would be too strict
-        throttle_state.last_request.insert(key, now);
-        return Ok(HttpResponse::TooManyRequests().finish());
-      }
-    }
+  let throttle = Throttle {
+    uri: "/api/v1/metrics/heartbeat".to_string(),
+    user_id,
+    content: format!("channel={}", payload.channel_id.clone()),
+    updated_at: Utc::now(),
+  };
+
+  let throttle_verification = throttle
+    .find_by_partition_key()
+    .consistency(Consistency::LocalOne)
+    .execute(&data.database)
+    .await?
+    .try_collect()
+    .await?;
+
+  if !throttle_verification.is_empty() {
+    info!("Throttling request: {:?}", throttle);
+    return Ok(HttpResponse::TooManyRequests().finish());
   }
+
+  info!("Throttle verification: {:?}", throttle_verification);
+  throttle.insert_throttle(&data.database, 5).await.unwrap();
 
   let main_metrics = UserMetrics {
     user_id,
