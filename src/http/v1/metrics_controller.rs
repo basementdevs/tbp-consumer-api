@@ -6,9 +6,11 @@ use crate::models::v1::metrics::{
   UserMetrics, UserMetricsByCategory, UserMetricsByStream, UserMostWatchedCategoryLeaderboard,
   UserMostWatchedChannelsLeaderboard,
 };
+use crate::models::v1::throttle::Throttle;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::types::Text;
+use chrono::Utc;
 use scylla::statement::Consistency;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -40,9 +42,10 @@ pub async fn get_user_metrics(
   .await?;
 
   if main_metrics.is_none() {
-    return Ok(HttpResponse::NotFound().json(json!({
-        "error": "Not Found",
-        "message": "User metrics not found"
+    return Ok(HttpResponse::Ok().json(json!({
+        "main_metrics": [],
+        "user_metrics_by_channel": [],
+        "user_metrics_by_category": [],
     })));
   }
 
@@ -94,6 +97,27 @@ pub async fn post_heartbeat(
     return Ok(HttpResponse::Unauthorized().finish());
   }
   let user_id = is_authenticated.unwrap().user_id.unwrap();
+
+  let throttle = Throttle {
+    uri: "/api/v1/metrics/heartbeat".to_string(),
+    user_id,
+    content: format!("channel={}", payload.channel_id.clone()),
+    updated_at: Utc::now(),
+  };
+
+  let throttle_verification = throttle
+    .find_by_partition_key()
+    .consistency(Consistency::LocalOne)
+    .execute(&data.database)
+    .await?
+    .try_collect()
+    .await?;
+
+  if !throttle_verification.is_empty() {
+    return Ok(HttpResponse::TooManyRequests().finish());
+  }
+
+  throttle.insert_throttle(&data.database, 60).await.unwrap();
 
   let main_metrics = UserMetrics {
     user_id,
