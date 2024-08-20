@@ -1,3 +1,5 @@
+use std::time::{Duration, Instant};
+
 use crate::config::app::AppState;
 use crate::http::v1::is_authenticated;
 use crate::http::SomeError;
@@ -94,6 +96,21 @@ pub async fn post_heartbeat(
     return Ok(HttpResponse::Unauthorized().finish());
   }
   let user_id = is_authenticated.unwrap().user_id.unwrap();
+
+  {
+    // NOTE: Scoped here so we don't have to hold the lock for the entire function nor drop it manually
+    let now = Instant::now();
+    let mut throttle_state = data.throttle_state.lock().unwrap();
+    let key = (user_id.to_string(), payload.channel_id.clone());
+    if let Some(last_request) = throttle_state.last_request.get(&key) {
+      // TODO: the time probably should be configurable in the state
+      if now.duration_since(*last_request) < Duration::from_secs(60) {
+        // Only update the last_rqeuest when we manage to fall under a minute, otherwise it would be too strict
+        throttle_state.last_request.insert(key, now);
+        return Ok(HttpResponse::TooManyRequests().finish());
+      }
+    }
+  }
 
   let main_metrics = UserMetrics {
     user_id,
