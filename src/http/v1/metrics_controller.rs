@@ -11,7 +11,6 @@ use actix_web::{get, post, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::types::Text;
 use chrono::Utc;
-use log::info;
 use scylla::statement::Consistency;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
