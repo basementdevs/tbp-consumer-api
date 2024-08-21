@@ -22,6 +22,8 @@ async fn main() -> std::io::Result<()> {
 
   let addr = (app_data.config.app.url.clone(), app_data.config.app.port);
   let tls_enabled = app_data.config.tls.enabled;
+  let max_workers = app_data.config.http.workers;
+
   debug!("Web Server Online!");
 
   let tls_config = if tls_enabled {
@@ -74,7 +76,8 @@ async fn main() -> std::io::Result<()> {
       .service(v1::metrics_controller::post_heartbeat)
       .service(v1::metrics_controller::get_user_metrics)
       .service(v1::auth_controller::post_user_authentication)
-  });
+  })
+  .workers(max_workers);
 
   match tls_enabled {
     true => {

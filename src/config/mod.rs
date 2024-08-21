@@ -1,8 +1,9 @@
 pub mod app;
 
 use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, Serialize, Deserialize)]
+use std::thread;
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct App {
   pub name: String,
   pub version: String,
@@ -10,6 +11,7 @@ pub struct App {
   pub port: u16,
   pub platform_secret: String,
 }
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Database {
   pub nodes: Vec<String>,
@@ -27,10 +29,16 @@ pub struct Tls {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Http {
+  pub workers: usize,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Config {
   pub app: App,
   pub tls: Tls,
   pub database: Database,
+  pub http: Http,
 }
 
 impl Config {
@@ -50,6 +58,16 @@ impl Config {
         enabled: dotenvy::var("APP_TLS_ENABLED").unwrap() == "true",
         cert: dotenvy::var("APP_TLS_CERT").unwrap(),
         key: dotenvy::var("APP_TLS_KEY").unwrap(),
+      },
+      http: Http {
+        workers: dotenvy::var("MAX_WORKERS")
+          .ok()
+          .and_then(|s| s.parse::<usize>().ok())
+          .unwrap_or_else(|| {
+            thread::available_parallelism()
+              .map(|n| n.get())
+              .unwrap_or(1)
+          }),
       },
       database: Database {
         nodes: dotenvy::var("SCYLLA_NODES")

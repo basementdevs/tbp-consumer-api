@@ -1,0 +1,22 @@
+services:
+  tbp-consumer-api:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.dev
+    tty: true
+    stdin_open: true
+    image: tbp-consumer-api:dev
+    container_name: tbp-consumer-api
+    hostname: dev
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env.docker
+    volumes:
+      - .:/usr/src/app:rw
+    networks:
+      - tbp-consumer-api
+networks:
+  tbp-consumer-api:
+    name: tbp-consumer-api
+    driver: bridge
