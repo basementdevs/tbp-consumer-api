@@ -1,4 +1,4 @@
-use crate::models::v1::settings::SettingOptions;
+use crate::models::v1::settings::{ColorOption, EffectOption, SettingOptions};
 use charybdis::macros::charybdis_view_model;
 use charybdis::types::{Frozen, Int, Text, Timestamp};
 use serde::{Deserialize, Serialize};
@@ -17,5 +17,7 @@ pub struct SettingsByUsername {
   pub timezone: Option<Text>,
   pub occupation: Frozen<SettingOptions>,
   pub pronouns: Frozen<SettingOptions>,
+  pub color: Frozen<ColorOption>,
+  pub effect: Frozen<EffectOption>,
   pub updated_at: Timestamp,
 }
