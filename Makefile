@@ -60,6 +60,11 @@ migrate: ## Runs database migrations
 keyspace: ## Configures the keyspace in the ScyllaDB
 	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
 
+.PHONY: refresh-keyspace
+refresh-keyspace: ## Configures the keyspace in the ScyllaDB
+	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),) --without-tablets -d
+	$(MAKE) migrate
+
 .PHONY: watch
 watch: ## Watches for changes in the source files and runs the project on each change.
 	@$(CARGO) watch -w src -x run
