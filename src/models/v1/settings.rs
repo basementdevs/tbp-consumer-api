@@ -6,28 +6,28 @@ use serde::{Deserialize, Serialize};
 #[charybdis_udt_model(type_name = settingoptions)]
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct SettingOptions {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
+  pub name: Text,
+  pub slug: Text,
+  pub translation_key: Text,
 }
 
 #[charybdis_udt_model(type_name = coloroption)]
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ColorOption {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
-    pub hex: Option<Text>,
+  pub name: Text,
+  pub slug: Text,
+  pub translation_key: Text,
+  pub hex: Option<Text>,
 }
 
 #[charybdis_udt_model(type_name = effectoption)]
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct EffectOption {
-    pub name: Text,
-    pub slug: Text,
-    pub translation_key: Text,
-    pub class_name: Text,
-    pub hex: Option<Text>,
+  pub name: Text,
+  pub slug: Text,
+  pub translation_key: Text,
+  pub class_name: Text,
+  pub hex: Option<Text>,
 }
 
 #[charybdis_model(
@@ -40,19 +40,19 @@ pub struct EffectOption {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct Settings {
-    pub user_id: Int,
-    pub username: Text,
-    pub channel_id: Text,
-    pub enabled: Option<Boolean>,
-    pub locale: Option<Text>,
-    pub timezone: Option<Text>,
-    pub occupation: Option<Frozen<SettingOptions>>,
-    pub pronouns: Option<Frozen<SettingOptions>>,
-    pub color: Option<Frozen<ColorOption>>,
-    pub effect: Option<Frozen<EffectOption>>,
-    pub is_developer: Option<Boolean>,
-    #[serde(default = "default_updated_at")]
-    pub updated_at: Timestamp,
+  pub user_id: Int,
+  pub username: Text,
+  pub channel_id: Text,
+  pub enabled: Option<Boolean>,
+  pub locale: Option<Text>,
+  pub timezone: Option<Text>,
+  pub occupation: Option<Frozen<SettingOptions>>,
+  pub pronouns: Option<Frozen<SettingOptions>>,
+  pub color: Option<Frozen<ColorOption>>,
+  pub effect: Option<Frozen<EffectOption>>,
+  pub is_developer: Option<Boolean>,
+  #[serde(default = "default_updated_at")]
+  pub updated_at: Timestamp,
 }
 
 #[charybdis_view_model(
@@ -63,21 +63,20 @@ pub struct Settings {
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct SettingsByUsername {
-    pub user_id: Int,
-    pub username: Text,
-    pub channel_id: Text,
-    pub enabled: Boolean,
-    pub locale: Option<Text>,
-    pub timezone: Option<Text>,
-    pub occupation: Frozen<SettingOptions>,
-    pub pronouns: Frozen<SettingOptions>,
-    pub color: Frozen<ColorOption>,
-    pub effect: Frozen<EffectOption>,
-    pub is_developer: Option<Boolean>,
-    pub updated_at: Timestamp,
+  pub user_id: Int,
+  pub username: Text,
+  pub channel_id: Text,
+  pub enabled: Boolean,
+  pub locale: Option<Text>,
+  pub timezone: Option<Text>,
+  pub occupation: Frozen<SettingOptions>,
+  pub pronouns: Frozen<SettingOptions>,
+  pub color: Frozen<ColorOption>,
+  pub effect: Frozen<EffectOption>,
+  pub is_developer: Option<Boolean>,
+  pub updated_at: Timestamp,
 }
 
-
 pub fn default_updated_at() -> DateTime<Utc> {
-    Utc::now()
+  Utc::now()
 }

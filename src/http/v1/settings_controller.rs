@@ -52,7 +52,10 @@ pub async fn get_settings(
   channel_id: web::Query<SettingsQuery>,
 ) -> Result<impl Responder, SomeError> {
   let username = username.into_inner();
-  let channel_id = channel_id.into_inner().channel_id.unwrap_or("global".to_string());
+  let channel_id = channel_id
+    .into_inner()
+    .channel_id
+    .unwrap_or("global".to_string());
 
   debug!("username: {}, channel_id: {}", username, channel_id);
 
@@ -68,42 +71,40 @@ pub async fn get_settings(
     .consistency(Consistency::LocalOne)
     .execute(&data.database)
     .await?
-      .try_collect()
-      .await
-      .unwrap();
+    .try_collect()
+    .await
+    .unwrap();
 
   if channel_id == "global" {
     return Ok(HttpResponse::Ok().json(json!(settings_model.first())));
   }
-  
+
   let mut settings_model = settings_model.pop();
   debug!("settings_model q tem: {:?}", settings_model);
-  
-  let should_query_global =  settings_model
-      .clone()
-      .is_some_and(|s| !s.enabled);
-  
-    let result = if should_query_global {
-        let mut settings = SettingsByUsername {
-            username,
-            channel_id: "global".to_string(),
-            ..Default::default()
-        };
-    
-        let mut settings_model = settings
-            .find_by_partition_key()
-            .consistency(Consistency::LocalOne)
-            .execute(&data.database)
-            .await?
-            .try_collect()
-            .await
-            .unwrap();
-      debug!("settings_model q tem: {:?}", settings_model);
-        settings_model.pop()
-    } else {
-        settings_model
+
+  let should_query_global = settings_model.clone().is_some_and(|s| !s.enabled);
+
+  let result = if should_query_global {
+    let mut settings = SettingsByUsername {
+      username,
+      channel_id: "global".to_string(),
+      ..Default::default()
     };
-  
+
+    let mut settings_model = settings
+      .find_by_partition_key()
+      .consistency(Consistency::LocalOne)
+      .execute(&data.database)
+      .await?
+      .try_collect()
+      .await
+      .unwrap();
+    debug!("settings_model q tem: {:?}", settings_model);
+    settings_model.pop()
+  } else {
+    settings_model
+  };
+
   let response = match result.is_some() {
     true => HttpResponse::Ok().json(json!(result.unwrap())),
     false => HttpResponse::NotFound().json(json!({})),
