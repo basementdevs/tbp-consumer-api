@@ -27,7 +27,7 @@ build: ## Compiles the project.
 
 .PHONY: run
 run: ## Compiles and runs the project.
-	@$(CARGO) run
+	@RUST_LOG=debug $(CARGO) run
 
 .PHONY: release
 release: clean ## Cleans up the project and compiles it for release.
@@ -58,7 +58,7 @@ migrate: ## Runs database migrations
 
 .PHONY: keyspace
 keyspace: ## Configures the keyspace in the ScyllaDB
-	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
+	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),) --without-tablets
 
 .PHONY: refresh-keyspace
 refresh-keyspace: ## Configures the keyspace in the ScyllaDB
