@@ -37,28 +37,23 @@ release: clean ## Cleans up the project and compiles it for release.
 test: ## Runs the test suite.
 	@$(CARGO) test
 
-# Load specific variables from .env file
-ifneq (,$(wildcard .env))
-    export SCYLLA_NODES := $(shell grep -E '^SCYLLA_NODES=' .env | cut -d '=' -f2)
-    export SCYLLA_KEYSPACE := $(shell grep -E '^SCYLLA_KEYSPACE=' .env | cut -d '=' -f2)
-    export SCYLLA_USERNAME := $(shell grep -E '^SCYLLA_USERNAME=' .env | cut -d '=' -f2)
-    export SCYLLA_PASSWORD := $(shell grep -E '^SCYLLA_PASSWORD=' .env | cut -d '=' -f2)
+# Load .env file
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
 endif
 
 .PHONY: print-env
 print-env: ## Prints the loaded environment variables from the .env file.
-	@echo "SCYLLA_NODES=$(SCYLLA_NODES)"
-	@echo "SCYLLA_KEYSPACE=$(SCYLLA_KEYSPACE)"
-	@echo "SCYLLA_USERNAME=$(SCYLLA_USERNAME)"
-	@echo "SCYLLA_PASSWORD=$(SCYLLA_PASSWORD)"
+	$(foreach v, $(.VARIABLES), $(info $(v)=$($(v))))
 
 .PHONY: migrate
 migrate: ## Runs database migrations
-	@migrate --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
+	@migrate --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) $(if $(SCYLLA_USERNAME),--user=$(SCYLLA_USERNAME)) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD))
 
 .PHONY: keyspace
 keyspace: ## Configures the keyspace in the ScyllaDB
-	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME), --user=$(SCYLLA_USERNAME),) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD),)
+	@toolkit keyspace --host=$(SCYLLA_NODES) --keyspace=$(SCYLLA_KEYSPACE) --replication-factor="1" $(if $(SCYLLA_USERNAME),--user=$(SCYLLA_USERNAME)) $(if $(SCYLLA_PASSWORD),--password=$(SCYLLA_PASSWORD))
 
 .PHONY: watch
 watch: ## Watches for changes in the source files and runs the project on each change.
