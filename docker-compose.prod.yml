@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: .docker/Dockerfile.prod
-    image: tpb-consumer-api:prod
+    image: tpb-consumer-api:prod-${APP_VERSION}
     hostname: prod
     restart: on-failure
     ports:
