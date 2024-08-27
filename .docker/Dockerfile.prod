@@ -1,0 +1,70 @@
+ARG INIT_PATH=/usr/local/bin/dumb-init
+ARG INIT_URL=https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+ARG USER=rust
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG WORK_DIR=/usr/src/app
+
+FROM rust:1.80.1 AS builder
+
+ARG INIT_PATH
+ARG INIT_URL
+ARG USER
+ARG USER_UID
+ARG USER_GID
+ARG WORK_DIR
+
+ENV CI=true LANG=C.UTF-8 LC_ALL=C.UTF-8 DEBIAN_FRONTEND=noninteractive
+
+WORKDIR ${WORK_DIR}
+
+SHELL [ "/bin/bash", "-c" ]
+
+RUN set -euxo pipefail; \
+  apt-get -qq update; \
+  apt-get -qq install -y build-essential cmake g++ libpcre3-dev libssl-dev openssl libgmp-dev ca-certificates software-properties-common > /dev/null; \
+  curl --fail --silent --show-error --location ${INIT_URL} --output ${INIT_PATH}; \
+  apt-get -qq clean; \
+  chmod +x ${INIT_PATH};
+
+COPY Cargo.toml Cargo.lock Makefile ${WORK_DIR}/
+COPY src ${WORK_DIR}/src
+
+RUN set -euxo pipefail; \
+    make clean; \
+    make release;
+
+# Since we are building on debian, if we copy from debian to alpine, it cannot run the binary
+# TODO: update to alpine in the future
+FROM rust:1.80.1 AS main
+
+ARG INIT_PATH
+ARG INIT_URL
+ARG USER
+ARG USER_UID
+ARG USER_GID
+ARG WORK_DIR
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+SHELL [ "/bin/bash", "-c" ]
+
+RUN set -euxo pipefail; \
+  groupadd --gid ${USER_GID} ${USER}; \
+  useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USER};
+
+COPY --from=builder --chown=${USER}:${USER} ${INIT_PATH} ${INIT_PATH}
+
+WORKDIR ${WORK_DIR}
+
+COPY --from=builder --chown=${USER}:${USER} ${WORK_DIR}/target/release/twitch-extension-api ${WORK_DIR}/twitch-extension-api
+
+COPY --chown=${USER}:${USER} static ${WORK_DIR}/static
+
+USER ${USER}
+
+EXPOSE 3000
+
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+
+CMD [ "/usr/src/app/twitch-extension-api" ]

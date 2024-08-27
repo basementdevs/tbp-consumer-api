@@ -1,3 +1,5 @@
+FROM rust:1.80.1 AS dev
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG INIT_PATH=/usr/local/bin/dumb-init
 ARG INIT_URL=https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
@@ -5,16 +7,6 @@ ARG USERNAME=rust
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 ARG WORK_DIR=/usr/src/app
-
-FROM rust:1.80.1 AS dev
-
-ARG DEBIAN_FRONTEND
-ARG INIT_PATH
-ARG INIT_URL
-ARG USERNAME
-ARG USER_UID
-ARG USER_GID
-ARG WORK_DIR
 
 ENV TZ=America/Sao_Paulo TERM=xterm-256color LANG=C.UTF-8 LC_ALL=C.UTF-8
 

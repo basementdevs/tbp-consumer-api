@@ -1,0 +1,23 @@
+services:
+  tbp-consumer-api:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.prod
+    image: tpb-consumer-api:prod
+    hostname: prod
+    restart: on-failure
+    ports:
+      - "3001-3003:3000"
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: '300MB'
+    networks:
+      - tbp-consumer-api
+    stop_signal: SIGTERM
+networks:
+  tbp-consumer-api:
+    name: tbp-consumer-api
+    driver: bridge
