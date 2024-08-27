@@ -39,10 +39,10 @@ test: ## Runs the test suite.
 
 # Load specific variables from .env file
 ifneq (,$(wildcard .env))
-    export SCYLLA_NODES := $(shell grep -E '^SCYLLA_NODES=' .env | awk -F '=' '{gsub(/^[[:space:]]*|[[:space:]]*$$/, "", $$2); print substr($$2, 2, length($$2)-2)}')
-    export SCYLLA_KEYSPACE := $(shell grep -E '^SCYLLA_KEYSPACE=' .env | awk -F '=' '{gsub(/^[[:space:]]*|[[:space:]]*$$/, "", $$2); print substr($$2, 2, length($$2)-2)}')
-    export SCYLLA_USERNAME := $(shell grep -E '^SCYLLA_USERNAME=' .env | awk -F '=' '{gsub(/^[[:space:]]*|[[:space:]]*$$/, "", $$2); print substr($$2, 2, length($$2)-2)}')
-    export SCYLLA_PASSWORD := $(shell grep -E '^SCYLLA_PASSWORD=' .env | awk -F '=' '{gsub(/^[[:space:]]*|[[:space:]]*$$/, "", $$2); print substr($$2, 2, length($$2)-2)}')
+    export SCYLLA_NODES := $(shell grep -E '^SCYLLA_NODES=' .env | cut -d '=' -f2)
+    export SCYLLA_KEYSPACE := $(shell grep -E '^SCYLLA_KEYSPACE=' .env | cut -d '=' -f2)
+    export SCYLLA_USERNAME := $(shell grep -E '^SCYLLA_USERNAME=' .env | cut -d '=' -f2)
+    export SCYLLA_PASSWORD := $(shell grep -E '^SCYLLA_PASSWORD=' .env | cut -d '=' -f2)
 endif
 
 .PHONY: print-env
