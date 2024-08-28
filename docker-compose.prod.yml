@@ -1,9 +1,9 @@
 services:
-  tbp-consumer-api:
+  tbp-server:
     build:
       context: .
       dockerfile: .docker/Dockerfile.prod
-    image: tpb-consumer-api:prod-${APP_VERSION}
+    image: tbp-consumer-api:${APP_VERSION}
     hostname: prod
     restart: on-failure
     ports:

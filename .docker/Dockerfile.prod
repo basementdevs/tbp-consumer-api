@@ -5,7 +5,8 @@ ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
 ARG WORK_DIR=/usr/src/app
 
-FROM rust:1.80.1 AS builder
+# rust:1.80.1-alpine3.20
+FROM rust@sha256:1f5aff501e02c1384ec61bb47f89e3eebf60e287e6ed5d1c598077afc82e83d5 AS builder
 
 ARG INIT_PATH
 ARG INIT_URL
@@ -14,17 +15,13 @@ ARG USER_UID
 ARG USER_GID
 ARG WORK_DIR
 
-ENV CI=true LANG=C.UTF-8 LC_ALL=C.UTF-8 DEBIAN_FRONTEND=noninteractive
+ENV CI=true LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 WORKDIR ${WORK_DIR}
 
-SHELL [ "/bin/bash", "-c" ]
-
 RUN set -euxo pipefail; \
-  apt-get -qq update; \
-  apt-get -qq install -y build-essential cmake g++ libpcre3-dev libssl-dev openssl libgmp-dev ca-certificates software-properties-common > /dev/null; \
+  apk add --no-cache build-base cmake g++ pcre-dev openssl-dev gmp-dev curl ca-certificates; \
   curl --fail --silent --show-error --location ${INIT_URL} --output ${INIT_PATH}; \
-  apt-get -qq clean; \
   chmod +x ${INIT_PATH};
 
 COPY Cargo.toml Cargo.lock Makefile ${WORK_DIR}/
@@ -34,9 +31,8 @@ RUN set -euxo pipefail; \
     make clean; \
     make release;
 
-# Since we are building on debian, if we copy from debian to alpine, it cannot run the binary
-# TODO: update to alpine in the future
-FROM rust:1.80.1 AS main
+# alpine:3.20
+FROM alpine@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5 AS main
 
 ARG INIT_PATH
 ARG INIT_URL
@@ -47,11 +43,11 @@ ARG WORK_DIR
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-SHELL [ "/bin/bash", "-c" ]
-
 RUN set -euxo pipefail; \
-  groupadd --gid ${USER_GID} ${USER}; \
-  useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USER};
+  addgroup -g ${USER_GID} ${USER}; \
+  adduser -u ${USER_UID} -G ${USER} -D ${USER}; \
+  apk update --no-cache; \
+  apk upgrade --no-cache;
 
 COPY --from=builder --chown=${USER}:${USER} ${INIT_PATH} ${INIT_PATH}
 
