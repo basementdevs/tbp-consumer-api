@@ -1,7 +1,7 @@
 use actix_web::{get, put, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::options::Consistency;
-use log::debug;
+use log::info;
 use serde::Deserialize;
 use serde_json::json;
 use web::Json;
@@ -57,6 +57,11 @@ pub async fn get_settings(
     .channel_id
     .unwrap_or("global".to_string());
 
+  info!(
+    "[GET Settings] -> Channel/User -> {} / {}",
+    channel_id, username
+  );
+
   let settings = SettingsByUsername {
     username: username.clone(),
     channel_id: channel_id.clone(),
@@ -96,7 +101,6 @@ pub async fn get_settings(
       .try_collect()
       .await
       .unwrap();
-    debug!("settings_model q tem: {:?}", settings_model);
     settings_model.pop()
   } else {
     settings_model
@@ -107,6 +111,5 @@ pub async fn get_settings(
     false => HttpResponse::NotFound().json(json!({})),
   };
 
-  // Ok(HttpResponse::Ok())
   Ok(response)
 }
