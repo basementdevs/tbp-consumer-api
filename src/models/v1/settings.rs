@@ -33,7 +33,7 @@ pub struct EffectOption {
 #[charybdis_model(
     table_name = settings_v1,
     partition_keys = [user_id, channel_id],
-    clustering_keys = [],
+    clustering_keys = [enabled],
     global_secondary_indexes = [],
     local_secondary_indexes = [],
     static_columns = [],
@@ -43,7 +43,7 @@ pub struct Settings {
   pub user_id: Int,
   pub username: Text,
   pub channel_id: Text,
-  pub enabled: Option<Boolean>,
+  pub enabled: Boolean,
   pub locale: Option<Text>,
   pub timezone: Option<Text>,
   pub occupation: Option<Frozen<SettingOptions>>,
@@ -58,7 +58,7 @@ pub struct Settings {
 #[charybdis_view_model(
     table_name = settings_by_username_v1,
     base_table = settings_v1,
-    partition_keys = [username, channel_id],
+    partition_keys = [username, enabled, channel_id],
     clustering_keys = [user_id],
 )]
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
@@ -69,12 +69,12 @@ pub struct SettingsByUsername {
   pub enabled: Boolean,
   pub locale: Option<Text>,
   pub timezone: Option<Text>,
-  pub occupation: Frozen<SettingOptions>,
-  pub pronouns: Frozen<SettingOptions>,
-  pub color: Frozen<ColorOption>,
-  pub effect: Frozen<EffectOption>,
+  pub occupation: Option<Frozen<SettingOptions>>,
+  pub pronouns: Option<Frozen<SettingOptions>>,
+  pub color: Option<Frozen<ColorOption>>,
+  pub effect: Option<Frozen<EffectOption>>,
   pub is_developer: Option<Boolean>,
-  pub updated_at: Timestamp,
+  pub updated_at: Option<Timestamp>,
 }
 
 pub fn default_updated_at() -> DateTime<Utc> {

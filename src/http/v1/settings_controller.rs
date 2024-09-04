@@ -34,6 +34,10 @@ pub async fn put_settings(
   }
 
   let settings = message.into_inner();
+  info!(
+    "[PUT Settings] -> Channel/User -> {} / {}",
+    settings.channel_id, settings.username
+  );
 
   settings.insert().execute(&data.database).await?;
 
@@ -62,14 +66,15 @@ pub async fn get_settings(
     channel_id, username
   );
 
-  let settings = SettingsByUsername {
+  let mut settings = SettingsByUsername {
     username: username.clone(),
-    channel_id: channel_id.clone(),
+    enabled: true,
+    channel_id,
     ..Default::default()
   };
 
   // Query the user settings with the given username and channel_id
-  let mut settings_model = settings
+  let settings_model = settings
     .find_by_partition_key()
     .consistency(Consistency::LocalOne)
     .execute(&data.database)
@@ -78,38 +83,25 @@ pub async fn get_settings(
     .await
     .unwrap();
 
-  if channel_id == "global" {
+  if !settings_model.is_empty() {
     return Ok(HttpResponse::Ok().json(json!(settings_model.first())));
   }
 
-  let settings_model = settings_model.pop();
+  settings.channel_id = "global".to_string();
 
-  let should_query_global = settings_model.clone().is_some_and(|s| !s.enabled);
+  let settings_model = settings
+    .find_by_partition_key()
+    .consistency(Consistency::LocalOne)
+    .execute(&data.database)
+    .await?
+    .try_collect()
+    .await
+    .unwrap();
 
-  let result = if should_query_global {
-    let settings = SettingsByUsername {
-      username,
-      channel_id: "global".to_string(),
-      ..Default::default()
-    };
-
-    let mut settings_model = settings
-      .find_by_partition_key()
-      .consistency(Consistency::LocalOne)
-      .execute(&data.database)
-      .await?
-      .try_collect()
-      .await
-      .unwrap();
-    settings_model.pop()
-  } else {
-    settings_model
+  let result = match settings_model.is_empty() {
+    true => HttpResponse::NotFound().finish(),
+    false => HttpResponse::Ok().json(json!(settings_model.first())),
   };
 
-let response = match result {
-    Some(data) => HttpResponse::Ok().json(json!(data)),
-    None => HttpResponse::NotFound().json(json!({})),
-};
-
-  Ok(response)
+  Ok(result)
 }
