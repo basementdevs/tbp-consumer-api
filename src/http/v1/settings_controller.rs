@@ -106,10 +106,10 @@ pub async fn get_settings(
     settings_model
   };
 
-  let response = match result.is_some() {
-    true => HttpResponse::Ok().json(json!(result.unwrap())),
-    false => HttpResponse::NotFound().json(json!({})),
-  };
+let response = match result {
+    Some(data) => HttpResponse::Ok().json(json!(data)),
+    None => HttpResponse::NotFound().json(json!({})),
+};
 
   Ok(response)
 }
