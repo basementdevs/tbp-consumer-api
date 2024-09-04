@@ -1,5 +1,4 @@
 use crate::config::Config;
-use dotenvy::dotenv;
 use scylla::{CachingSession, Session, SessionBuilder};
 use std::sync::Arc;
 use std::time::Duration;
@@ -12,8 +11,6 @@ pub struct AppState {
 
 impl AppState {
   pub async fn new() -> Self {
-    dotenv().expect(".env file not found");
-
     let config = Config::new();
     let session: Session = SessionBuilder::new()
       .known_nodes(config.database.nodes)

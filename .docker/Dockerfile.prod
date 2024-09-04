@@ -1,0 +1,66 @@
+ARG INIT_PATH=/usr/local/bin/dumb-init
+ARG INIT_URL=https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+ARG USER=rust
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG WORK_DIR=/usr/src/app
+
+# rust:1.80.1-alpine3.20
+FROM rust@sha256:1f5aff501e02c1384ec61bb47f89e3eebf60e287e6ed5d1c598077afc82e83d5 AS builder
+
+ARG INIT_PATH
+ARG INIT_URL
+ARG USER
+ARG USER_UID
+ARG USER_GID
+ARG WORK_DIR
+
+ENV CI=true LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+WORKDIR ${WORK_DIR}
+
+RUN set -euxo pipefail; \
+  apk add --no-cache build-base cmake g++ pcre-dev openssl-dev gmp-dev curl ca-certificates; \
+  curl --fail --silent --show-error --location ${INIT_URL} --output ${INIT_PATH}; \
+  chmod +x ${INIT_PATH};
+
+COPY Cargo.toml Cargo.lock Makefile ${WORK_DIR}/
+COPY src ${WORK_DIR}/src
+
+RUN set -euxo pipefail; \
+    make clean; \
+    make release;
+
+# alpine:3.20
+FROM alpine@sha256:0a4eaa0eecf5f8c050e5bba433f58c052be7587ee8af3e8b3910ef9ab5fbe9f5 AS main
+
+ARG INIT_PATH
+ARG INIT_URL
+ARG USER
+ARG USER_UID
+ARG USER_GID
+ARG WORK_DIR
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+RUN set -euxo pipefail; \
+  addgroup -g ${USER_GID} ${USER}; \
+  adduser -u ${USER_UID} -G ${USER} -D ${USER}; \
+  apk update --no-cache; \
+  apk upgrade --no-cache;
+
+COPY --from=builder --chown=${USER}:${USER} ${INIT_PATH} ${INIT_PATH}
+
+WORKDIR ${WORK_DIR}
+
+COPY --from=builder --chown=${USER}:${USER} ${WORK_DIR}/target/release/twitch-extension-api ${WORK_DIR}/twitch-extension-api
+
+COPY --chown=${USER}:${USER} static ${WORK_DIR}/static
+
+USER ${USER}
+
+EXPOSE 3000
+
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+
+CMD [ "/usr/src/app/twitch-extension-api" ]

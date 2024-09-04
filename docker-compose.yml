@@ -1,15 +1,15 @@
 services:
-  tbp-consumer-api:
+  tbp-server:
     build:
       context: .
       dockerfile: .docker/Dockerfile.dev
     tty: true
     stdin_open: true
     image: tbp-consumer-api:dev
-    container_name: tbp-consumer-api
+    container_name: tbp-server
     hostname: dev
     ports:
-      - "8001:8001"
+      - "3000:3000"
     env_file:
       - .env.docker
     volumes:
