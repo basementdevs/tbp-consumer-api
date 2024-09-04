@@ -33,7 +33,7 @@ pub struct EffectOption {
 #[charybdis_model(
     table_name = settings_v1,
     partition_keys = [user_id, channel_id],
-    clustering_keys = [enabled],
+    clustering_keys = [username],
     global_secondary_indexes = [],
     local_secondary_indexes = [],
     static_columns = [],
