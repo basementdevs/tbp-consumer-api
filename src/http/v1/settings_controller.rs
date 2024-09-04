@@ -57,9 +57,7 @@ pub async fn get_settings(
     .channel_id
     .unwrap_or("global".to_string());
 
-  debug!("username: {}, channel_id: {}", username, channel_id);
-
-  let mut settings = SettingsByUsername {
+  let settings = SettingsByUsername {
     username: username.clone(),
     channel_id: channel_id.clone(),
     ..Default::default()
@@ -79,13 +77,12 @@ pub async fn get_settings(
     return Ok(HttpResponse::Ok().json(json!(settings_model.first())));
   }
 
-  let mut settings_model = settings_model.pop();
-  debug!("settings_model q tem: {:?}", settings_model);
+  let settings_model = settings_model.pop();
 
   let should_query_global = settings_model.clone().is_some_and(|s| !s.enabled);
 
   let result = if should_query_global {
-    let mut settings = SettingsByUsername {
+    let settings = SettingsByUsername {
       username,
       channel_id: "global".to_string(),
       ..Default::default()
