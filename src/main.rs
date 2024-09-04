@@ -4,6 +4,7 @@ use std::io::BufReader;
 use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer};
+use dotenvy::dotenv;
 use log::debug;
 
 use self::http::v1;
@@ -16,7 +17,7 @@ mod models;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-  dotenvy::dotenv().expect(".env file not found");
+  dotenv().ok();
   colog::init();
   let app_data = AppState::new().await;
 
