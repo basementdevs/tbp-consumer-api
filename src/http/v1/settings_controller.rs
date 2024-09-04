@@ -1,13 +1,14 @@
 use actix_web::{get, put, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::options::Consistency;
+use log::info;
+use serde::Deserialize;
 use serde_json::json;
 use web::Json;
 
 use crate::config::app::AppState;
 use crate::http::SomeError;
-use crate::models::v1::settings::Settings;
-use crate::models::v1::settings_by_username::SettingsByUsername;
+use crate::models::v1::settings::{Settings, SettingsByUsername};
 
 #[put("/api/v1/settings")]
 pub async fn put_settings(
@@ -39,29 +40,76 @@ pub async fn put_settings(
   Ok(HttpResponse::Ok().json(json!(settings)))
 }
 
+#[derive(Deserialize)]
+struct SettingsQuery {
+  channel_id: Option<String>,
+}
+
 #[get("/api/v1/settings/{username}")]
 pub async fn get_settings(
   data: web::Data<AppState>,
   username: web::Path<String>,
+  channel_id: web::Query<SettingsQuery>,
 ) -> Result<impl Responder, SomeError> {
   let username = username.into_inner();
+  let channel_id = channel_id
+    .into_inner()
+    .channel_id
+    .unwrap_or("global".to_string());
+
+  info!(
+    "[GET Settings] -> Channel/User -> {} / {}",
+    channel_id, username
+  );
 
   let settings = SettingsByUsername {
-    username,
+    username: username.clone(),
+    channel_id: channel_id.clone(),
     ..Default::default()
   };
 
-  let settings = settings
+  // Query the user settings with the given username and channel_id
+  let mut settings_model = settings
     .find_by_partition_key()
     .consistency(Consistency::LocalOne)
     .execute(&data.database)
-    .await?;
+    .await?
+    .try_collect()
+    .await
+    .unwrap();
 
-  let settings = settings.try_collect().await?;
-  let response = match settings.is_empty() {
-    true => HttpResponse::NotFound().json(json!({})),
-    false => HttpResponse::Ok().json(json!(settings[0].clone())),
+  if channel_id == "global" {
+    return Ok(HttpResponse::Ok().json(json!(settings_model.first())));
+  }
+
+  let settings_model = settings_model.pop();
+
+  let should_query_global = settings_model.clone().is_some_and(|s| !s.enabled);
+
+  let result = if should_query_global {
+    let settings = SettingsByUsername {
+      username,
+      channel_id: "global".to_string(),
+      ..Default::default()
+    };
+
+    let mut settings_model = settings
+      .find_by_partition_key()
+      .consistency(Consistency::LocalOne)
+      .execute(&data.database)
+      .await?
+      .try_collect()
+      .await
+      .unwrap();
+    settings_model.pop()
+  } else {
+    settings_model
   };
+
+let response = match result {
+    Some(data) => HttpResponse::Ok().json(json!(data)),
+    None => HttpResponse::NotFound().json(json!({})),
+};
 
   Ok(response)
 }
