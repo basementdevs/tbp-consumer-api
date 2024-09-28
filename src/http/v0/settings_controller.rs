@@ -6,8 +6,8 @@ use web::Json;
 
 use crate::config::app::AppState;
 use crate::http::SomeError;
-use crate::models::materialized_views::settings_by_username::SettingsByUsername;
-use crate::models::settings::Settings;
+use crate::models::v0::settings::Settings;
+use crate::models::v0::settings_by_username::SettingsByUsername;
 
 static AVAILABLE_PRONOUNS: &[&str] = &[
   "n/d",

@@ -1,0 +1,35 @@
+# rust:1.80.1-alpine3.20
+FROM rust@sha256:1f5aff501e02c1384ec61bb47f89e3eebf60e287e6ed5d1c598077afc82e83d5 AS dev
+
+ARG INIT_PATH=/usr/local/bin/dumb-init
+ARG INIT_URL=https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
+ARG USER=rust
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG WORK_DIR=/usr/src/app
+
+ENV TZ=America/Sao_Paulo TERM=xterm-256color LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+RUN set -euxo pipefail; \
+  apk add --no-cache nano sudo build-base tzdata curl cmake g++ pcre-dev openssl-dev make gmp-dev git ca-certificates wget zip unzip busybox; \
+  curl --fail --silent --show-error --location ${INIT_URL} --output ${INIT_PATH}; \
+  chmod +x ${INIT_PATH}; \
+  cargo install cargo-watch;
+
+RUN set -euxo pipefail; \
+  addgroup -g ${USER_GID} ${USER}; \
+  adduser -u ${USER_UID} -G ${USER} -h /home/${USER} -D ${USER}; \
+  echo "${USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USER}; \
+  chmod 0440 /etc/sudoers.d/${USER};
+
+USER ${USER}
+
+ENV CARGO_HOME="/home/${USER}/.cargo"
+
+WORKDIR ${WORK_DIR}
+
+EXPOSE 3000
+
+ENTRYPOINT [ "/usr/local/bin/dumb-init", "--" ]
+
+CMD [ "cargo", "watch", "-w", "src", "-x", "run" ]

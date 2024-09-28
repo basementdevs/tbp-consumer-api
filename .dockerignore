@@ -1,0 +1,23 @@
+# Exclude version control and IDE files
+.git
+.github
+.idea
+
+# Exclude build artifacts
+target
+
+# Exclude environment files
+.env*
+
+# Exclude Docker development files
+.docker*
+
+# Exclude certificate files
+cert.pem
+key.pem
+
+# Exclude unnecessary documentation and configuration
+README.md
+
+# Exclute test files
+tests
