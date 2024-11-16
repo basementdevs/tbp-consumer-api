@@ -50,4 +50,4 @@ jobs:
       - name: Run linter
         uses: clechasseur/rs-clippy-check@a2a93bdcf05de7909aabd62eca762179ad3dbe50 # v3.0.5
         with:
-          args: --all-features
+          args: --all-features --no-deps
