@@ -1,13 +1,29 @@
 version: 2
 
 updates:
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      devDependencies:
+        dependency-type: development
+        patterns:
+          - "*"
+      dependencies:
+        dependency-type: production
+        patterns:
+          - "*"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
-  - package-ecosystem: "cargo"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    target-branch: "develop"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
