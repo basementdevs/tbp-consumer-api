@@ -20,12 +20,8 @@ updates:
           - "version-update:semver-major"
     groups:
       devDependencies:
-        dependency-type: development
-        applies-to: "version-updates"
         patterns:
           - "*"
       dependencies:
-        dependency-type: production
-        applies-to: "version-updates"
         patterns:
           - "*"
