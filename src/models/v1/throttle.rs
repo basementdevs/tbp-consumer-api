@@ -1,7 +1,7 @@
 use charybdis::macros::charybdis_model;
 use charybdis::types::{Int, Text, Timestamp};
-use scylla::query::Query;
 use scylla::CachingSession;
+use scylla::query::Query;
 use serde::{Deserialize, Serialize};
 
 static INSERT_THROTTLE_WITH_TTL: &str =

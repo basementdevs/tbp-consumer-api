@@ -1,13 +1,13 @@
 use crate::config::app::AppState;
-use crate::http::v1::is_authenticated;
 use crate::http::SomeError;
+use crate::http::v1::is_authenticated;
 use crate::models::v1::metrics::{
-  delete_user_most_watched_category_leaderboard, delete_user_most_watched_channels_leaderboard,
   UserMetrics, UserMetricsByCategory, UserMetricsByStream, UserMostWatchedCategoryLeaderboard,
-  UserMostWatchedChannelsLeaderboard,
+  UserMostWatchedChannelsLeaderboard, delete_user_most_watched_category_leaderboard,
+  delete_user_most_watched_channels_leaderboard,
 };
 use crate::models::v1::throttle::Throttle;
-use actix_web::{get, post, web, HttpResponse, Responder};
+use actix_web::{HttpResponse, Responder, get, post, web};
 use charybdis::operations::{Find, Insert};
 use charybdis::types::Text;
 use chrono::Utc;

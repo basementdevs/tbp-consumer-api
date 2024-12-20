@@ -1,7 +1,7 @@
 pub mod v0;
 pub mod v1;
 
-use actix_web::{get, HttpResponse, ResponseError};
+use actix_web::{HttpResponse, ResponseError, get};
 use charybdis::errors::CharybdisError;
 use serde_json::json;
 use thiserror::Error;
