@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, Responder, get, put, web};
+use actix_web::{get, put, web, HttpResponse, Responder};
 use charybdis::operations::{Find, Insert};
 use charybdis::options::Consistency;
 use log::info;

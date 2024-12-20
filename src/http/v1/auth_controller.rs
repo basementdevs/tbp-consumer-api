@@ -1,8 +1,8 @@
 use crate::config::app::AppState;
-use crate::http::SomeError;
 use crate::http::v1::validate_token;
+use crate::http::SomeError;
 use crate::models::v1::users::UserToken;
-use actix_web::{HttpResponse, Responder, post, web};
+use actix_web::{post, web, HttpResponse, Responder};
 use charybdis::operations::Insert;
 use serde::{Deserialize, Serialize};
 use serde_json::json;

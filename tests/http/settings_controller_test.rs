@@ -2,8 +2,8 @@
 mod tests {
   use std::sync::Arc;
 
-  use actix_web::App;
   use actix_web::web::Data;
+  use actix_web::App;
   use charybdis::operations::{Delete, Insert};
   use twitch_extension_api::config::app::AppState;
   use twitch_extension_api::http::v1::settings_controller::{get_settings, put_settings};
